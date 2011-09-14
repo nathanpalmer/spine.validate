@@ -1,41 +1,49 @@
 var Person = (function() {
-    var model = Spine.Model.setup("Person", ["first","last","age","birth","address1","city","state","zip"]);
+    var model = Spine.Model.setup("Person", ["first","last","age","birth","address1","city","state","zip","email"]);
     model.include(Spine.Validate);
     model.include({
-        rules: function(check) { return [
-            check("first")
-                .IsAlpha()
-                .Equals("Nathan"),
+        rules: function(RuleFor) { return [
+            RuleFor("first")
+                .WhenNotNew()
+                .NotNull()
+                .NotEmpty()
+                .LessThanOrEqual(function(record) {
+                    return record.age;
+                }),
 
-            check("first")
-                .Must(function(field) {
-                    return field === "Nathan";
+            RuleFor("first")
+                .Must(function(field,record) {
+                    return field === record.last;
                 })
-                .If(function(record) {
+                .When(function(record) {
                     return record.last === "Palmer";
                 })
-                .Message("if your last name is Palmer then your first must be Nathan"),
+                .Message("first and last names must match"),
 
-            check("last")
-                .Required(),
+            RuleFor("last")
+                .Required()
+                .Matches(/[A-Z]+/i),
 
-            check("age")
+            RuleFor("age")
                 .Between(18,25),
 
-            check("birth")
+            RuleFor("birth")
                 .IsInPast(),
 
-            check("state")
+            RuleFor("state")
                 .Required()
-                .If(function(record) {
+                .When(function(record) {
                     return record.zip !== undefined && record.zip.length > 0
                 })
                 .MaxLength(2),
 
-            check("zip")
-                .Optional()
+            RuleFor("zip")
+                .WhenNotBlank()
                 .IsNumeric()
-                .Length(5)
+                .Length(5),
+
+            RuleFor("email")
+                .EmailAddress()
         ]}
     });
     return model;
@@ -54,6 +62,7 @@ var PersonController = Spine.Controller.create({
         "value input[name=city]": "city",
         "value input[name=state]": "state",
         "value input[name=zip]": "zip",
+        "value input[name=email]": "email",
     },
 
     init: function() {
@@ -94,6 +103,8 @@ var PersonController = Spine.Controller.create({
             "<input type='text' name='state' value='${state}'/>",
             "<label for='zip'>Zip</label>",
             "<input type='text' name='zip' value='${zip}'/>",
+            "<label for='email'>Email</label>",
+            "<input type='text' name='email' value='${email}'/>",
             "<span class='error'>${error}</span>"
         ].join("");
 
