@@ -25,39 +25,43 @@ Then setup some super awesome rules to go along with that
 ```javascript
     model.include({
         rules: function(check) { return [
-            check("first")
-                .IsAlpha()
-                .Equals("Nathan"),
+            RuleFor("first")
+                .WhenNotNew()
+                .NotEmpty(),
 
-            check("first")
-                .Must(function(field) {
-                    return field === "Nathan";
+            RuleFor("first")
+                .Must(function(field,record) {
+                    return field === record.last;
                 })
-                .If(function(record) {
+                .When(function(record) {
                     return record.last === "Palmer";
                 })
-                .Message("if your last name is Palmer then your first must be Nathan"),
+                .Message("first and last names must match"),
 
-            check("last")
-                .Required(),
+            RuleFor("last")
+                .Required()
+                .Matches(/[A-Z]+/i),
 
-            check("age")
+            RuleFor("age")
                 .Between(18,25),
 
-            check("birth")
+            RuleFor("birth")
                 .IsInPast(),
 
-            check("state")
+            RuleFor("state")
                 .Required()
-                .If(function(record) {
+                .When(function(record) {
                     return record.zip !== undefined && record.zip.length > 0
                 })
                 .MaxLength(2),
 
-            check("zip")
-                .Optional()
+            RuleFor("zip")
+                .WhenNotBlank()
                 .IsNumeric()
-                .Length(5)
+                .Length(5),
+
+            RuleFor("email")
+                .EmailAddress()
         ]}
     });
 ```
