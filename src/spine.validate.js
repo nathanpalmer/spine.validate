@@ -1,8 +1,25 @@
-(function(Spine) {
+(function(win) {
     var Check = function(field) {
         var validators = [];
         var condition = function() { return true; };
         var message;
+        var invert = false;
+        var inverter = function(func,record) {
+            var result = func(record);
+            if (result === undefined) {
+                return message || "failed";
+            }
+        };
+        var add = function(func) {
+            if (invert) {
+                validators.push(function(record) {
+                    return inverter(func,record)
+                });
+                invert = false;
+            } else {
+                validators.push(func);
+            }
+        };
 
         return {
             /* Conditional */
@@ -31,9 +48,19 @@
                 return this;  
             },
 
+            /* Inverse */
+            Not: function(func) {
+                invert = true;
+                return this;  
+            },
+            WillNotBe: function(func) {
+                invert = true;
+                return this;
+            },
+
             /* Standard Validators */
             Equal: function(value) {
-                validators.push(function(record) {
+                add(function(record) {
                     if (record[field] !== value) {
                         return message || field + " must equal " + value;
                     }
@@ -41,7 +68,7 @@
                 return this;
             },
             Required: function() {
-                validators.push(function(record) {
+                add(function(record) {
                     if (record[field] === undefined || record[field] === "") {
                         return field + " is required";
                     }
@@ -51,7 +78,7 @@
 
             /* Length Validators */
             Length: function(length) {
-                validators.push(function(record) {
+                add(function(record) {
                     if (record[field].length !== length) {
                         return message || field + " must be " + length + " characters";
                     }
@@ -59,7 +86,7 @@
                 return this;
             },
             MaxLength: function(length) {
-                validators.push(function(record) {
+                add(function(record) {
                     if (record[field].length > length) {
                         return message || field + " must be less than " + length + " characters";
                     }
@@ -67,7 +94,7 @@
                 return this;
             },
             MinLength: function(length) {
-                validators.push(function(record) {
+                add(function(record) {
                     if (record[field].length < length) {
                         return message || field + " must be greater than " + length + " characters";
                     }
@@ -77,7 +104,7 @@
 
             /* Numeric Validator */
             LessThan: function(value) {
-                validators.push(function(record) {
+                add(function(record) {
                     var val = typeof value === "function" ? 
                                 isNaN(parseInt(value(record))) ? 0 : parseInt(value(record)) : 
                                 value;
@@ -89,7 +116,7 @@
                 return this;
             },
             LessThanOrEqual: function(value) {
-                validators.push(function(record) {
+                add(function(record) {
                     var val = typeof value === "function" ? 
                                 isNaN(parseInt(value(record))) ? 0 : parseInt(value(record)) : 
                                 value;
@@ -101,7 +128,7 @@
                 return this;
             },
             GreaterThan: function(value) {
-                validators.push(function(record) {
+                add(function(record) {
                     var val = typeof value === "function" ? 
                                 isNaN(parseInt(value(record))) ? 0 : parseInt(value(record)) : 
                                 value;
@@ -113,7 +140,7 @@
                 return this;
             },
             GreaterThanOrEqual: function(value) {
-                validators.push(function(record) {
+                add(function(record) {
                     var val = typeof value === "function" ? 
                                 isNaN(parseInt(value(record))) ? 0 : parseInt(value(record)) : 
                                 value;
@@ -125,7 +152,7 @@
                 return this;
             },
             Between: function(min,max) {
-                validators.push(function(record) {
+                add(function(record) {
                     if (typeof record[field] === "undefined") return;
                     
                     if (record[field] < min || record[field] > max) {
@@ -137,7 +164,7 @@
 
             /* Opposite Validators */
             NotNull: function() {
-                validators.push(function(record) {
+                add(function(record) {
                     if (typeof record[field] === "undefined" || record[field] === null) {
                         return message || field + " must not be null";
                     }
@@ -145,7 +172,7 @@
                 return this;
             },
             NotEmpty: function() {
-                validators.push(function(record) {
+                add(function(record) {
                     if (typeof record[field] === "undefined" || record[field] === null) return;
                     if (record[field].length === 0) {
                         return message || field + " must not be blank";
@@ -154,7 +181,7 @@
                 return this;
             },
             NotEqual: function(value) {
-                validators.push(function(record) {
+                add(function(record) {
                     if (record[field] === value) {
                         return message || field + " must not equal " + value;
                     }
@@ -164,7 +191,7 @@
 
             /* Regular Expression Validators */
             Matches: function(regex) {
-                validators.push(function(record) {
+                add(function(record) {
                     if (!record[field].match(regex)) {
                         return message || field + " failed validation";
                     }
@@ -172,7 +199,7 @@
                 return this;
             },
             IsAlpha: function() {
-                validators.push(function(record) {
+                add(function(record) {
                     if (record[field] !== undefined && !record[field].match(/[A-Za-z]+/i)) {
                         return field + " must be alpha";
                     }
@@ -180,7 +207,7 @@
                 return this;
             },
             IsNumeric: function() {
-                validators.push(function(record) {
+                add(function(record) {
                     if (record[field] !== undefined && !record[field].match(/[0-9]+/)) {
                         return field + " must be alpha";
                     }
@@ -246,7 +273,7 @@
                     ")$"
                 ].join(""));
 
-                validators.push(function(record) {
+                add(function(record) {
                     if (typeof record[field] === "undefined" || record[field] === null) return;
                     if (!record[field].match(regex)) {
                         return message || field + " failed validation";
@@ -257,7 +284,7 @@
 
             /* Predicate Validators */
             Must: function(func) {
-                validators.push(function(record) {
+                add(function(record) {
                     if (!func(record[field],record)) {
                         return message || field + " failed validation";
                     }
@@ -267,7 +294,7 @@
 
             /* Date Validators */
             IsInPast: function() {
-                validators.push(function(record) {
+                add(function(record) {
                     if (typeof record[field] === "undefined") return;
 
                     if (new Date(record[field]).getTime() > new Date().getTime()) {
@@ -325,5 +352,17 @@
         }
     };
 
-    Spine.Validate = Validate;
-})(Spine);
+    win.Spine.Validate = Validate;
+
+    /* This is a bit of an inverted compatibility layer for non-spine
+     * applications. I will need to switch this around. Not the best
+     * design */
+    win.ChainValidation = {
+        RuleFor: Check,
+        Validate: function(model,rules) {
+            model.rules = function() { return rules; }
+            var errors = Validate.validate.apply(model,arguments)
+            return errors === undefined ? [] : errors;
+        }
+    };
+})(window);
