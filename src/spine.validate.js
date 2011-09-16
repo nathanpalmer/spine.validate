@@ -58,6 +58,15 @@
             ItShould: function() {
                 return this;
             },
+            ItShouldBe: function() {
+                return this;
+            },
+            It: function() {
+                return this;
+            },
+            ItIs: function() {
+                return this;
+            },
 
             /* Inverse */
             Not: function(func) {
