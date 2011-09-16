@@ -20,23 +20,31 @@
                 validators.push(func);
             }
         };
+        var addCondition = function(func) {
+            if (invert) {
+                condition = function(record) { return !func(record); };
+                invert = false;
+            } else {
+                condition = func;
+            }
+        };
 
         return {
             /* Conditional */
-            WhenNotNew: function() {
-                condition = function(record) {
-                    return !record.newRecord;  
-                };
+            OnCreate: function() {
+                addCondition(function(record) {
+                    return record.newRecord;  
+                });
                 return this;
             },
             WhenNotBlank: function() {
-                condition = function(record) {
+                addCondition(function(record) {
                     return record[field] !== undefined && record[field].length > 0;
-                };
+                });
                 return this;
             },
             When: function(func) {
-                condition = func;
+                addCondition(func);
                 return this;
             },
 
@@ -47,6 +55,9 @@
             Also: function() {
                 return this;  
             },
+            ItShould: function() {
+                return this;
+            },
 
             /* Inverse */
             Not: function(func) {
@@ -56,6 +67,14 @@
             WillNotBe: function(func) {
                 invert = true;
                 return this;
+            },
+            WhenNot: function(func) {
+                invert = true;
+                return this;
+            },
+            DontRun: function(func) {
+                invert = true;
+                return this;  
             },
 
             /* Standard Validators */
