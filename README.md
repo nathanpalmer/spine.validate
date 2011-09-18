@@ -1,4 +1,4 @@
-Simple model validation framework for [Spine](https://github.com/maccman/spine).
+Simple model validation framework for [Spine](https://github.com/maccman/spine). Allowing you to mix strong validation rules with fluid english context. 
 
 # Install
 Download spine.validation.js and include it in your html.
@@ -26,10 +26,12 @@ Then setup some super awesome rules to go along with that
     model.include({
         rules: function(check) { return [
             RuleFor("first")
-                .WhenNotNew()
-                .NotEmpty(),
+                .WhenNot().OnCreate()
+                .ItShouldBe()
+                .Required(),
 
             RuleFor("first")
+                .It()
                 .Must(function(field,record) {
                     return field === record.last;
                 })
@@ -39,28 +41,34 @@ Then setup some super awesome rules to go along with that
                 .Message("first and last names must match"),
 
             RuleFor("last")
+                .ItIs()
                 .Required()
+                .And().Also()
                 .Matches(/[A-Z]+/i),
 
             RuleFor("age")
+                .ItShouldBe()
                 .Between(18,25),
 
             RuleFor("birth")
+                .It()
                 .IsInPast(),
 
             RuleFor("state")
+                .ItIs()
                 .Required()
                 .When(function(record) {
                     return record.zip !== undefined && record.zip.length > 0
                 })
-                .MaxLength(2),
+                .And().MaxLength(2),
 
             RuleFor("zip")
-                .WhenNotBlank()
-                .IsNumeric()
-                .Length(5),
+                .WhenNot().OnCreate()
+                .It().IsNumeric()
+                .Also().ItIs().Length(5),
 
             RuleFor("email")
+                .ItIs()
                 .EmailAddress()
         ]}
     });
