@@ -108,4 +108,35 @@ describe("Validate", function() {
 		expect(errors.length).toBe(1);
 		expect(errors[0].property).toBe("first");
 	});
+
+	it("should fail email", function() {
+		// Given
+		var model = { email: "none" };
+		var rules = [
+			RuleFor("email")
+				.EmailAddress()
+		];
+
+		// When
+		var errors = ChainValidation.Validate(model, rules);
+
+		// Then
+		expect(errors.length).toBe(1);
+		expect(errors[0].property).toBe("email");
+	});
+
+	it("should validate email", function() {
+		// Given
+		var model = { email: "test@example.com" };
+		var rules = [
+			RuleFor("email")
+				.EmailAddress()
+		];
+
+		// When
+		var errors = ChainValidation.Validate(model, rules);
+
+		// Then
+		expect(errors.length).toBe(0);
+	});
 });

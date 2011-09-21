@@ -13,7 +13,7 @@
         var add = function(func) {
             if (invert) {
                 validators.push(function(record) {
-                    return inverter(func,record)
+                    return inverter(func,record);
                 });
                 invert = false;
             } else {
@@ -134,7 +134,7 @@
             LessThan: function(value) {
                 add(function(record) {
                     var val = typeof value === "function" ? 
-                                isNaN(parseInt(value(record))) ? 0 : parseInt(value(record)) : 
+                                isNaN(parseInt(value(record),10)) ? 0 : parseInt(value(record),10) : 
                                 value;
 
                     if (record[field] >= val) {
@@ -146,7 +146,7 @@
             LessThanOrEqual: function(value) {
                 add(function(record) {
                     var val = typeof value === "function" ? 
-                                isNaN(parseInt(value(record))) ? 0 : parseInt(value(record)) : 
+                                isNaN(parseInt(value(record),10)) ? 0 : parseInt(value(record),10) : 
                                 value;
 
                     if (record[field] > val) {
@@ -158,7 +158,7 @@
             GreaterThan: function(value) {
                 add(function(record) {
                     var val = typeof value === "function" ? 
-                                isNaN(parseInt(value(record))) ? 0 : parseInt(value(record)) : 
+                                isNaN(parseInt(value(record),10)) ? 0 : parseInt(value(record),10) : 
                                 value;
 
                     if (record[field] <= val) {
@@ -170,7 +170,7 @@
             GreaterThanOrEqual: function(value) {
                 add(function(record) {
                     var val = typeof value === "function" ? 
-                                isNaN(parseInt(value(record))) ? 0 : parseInt(value(record)) : 
+                                isNaN(parseInt(value(record),10)) ? 0 : parseInt(value(record),10) : 
                                 value;
 
                     if (record[field] < val) {
@@ -181,7 +181,7 @@
             },
             Between: function(min,max) {
                 add(function(record) {
-                    if (typeof record[field] === "undefined") return;
+                    if (typeof record[field] === "undefined")  { return; }
                     
                     if (record[field] < min || record[field] > max) {
                         return field + " is not between " + min + " and " + max;
@@ -201,7 +201,7 @@
             },
             NotEmpty: function() {
                 add(function(record) {
-                    if (typeof record[field] === "undefined" || record[field] === null) return;
+                    if (typeof record[field] === "undefined" || record[field] === null) { return; }
                     if (record[field].length === 0) {
                         return message || field + " must not be blank";
                     }
@@ -254,7 +254,7 @@
                         "(",
                             "([a-z]|[0-9]|!|#|$|%|&|'|\\*|\\+|\\-|\\/|\\=|\\?|\\^|_|`|\\{|\\||\\}|~)+",
                             "(",
-                                "\.",
+                                "\\.",
                                 "([a-z]|[0-9]|!|#|$|%|&|'|\\*|\\+|\\-|\\/|\\=|\\?|\\^|_|`|\\{|\\||\\}|~)+",
                             ")*",
                         ")",
@@ -302,7 +302,7 @@
                 ].join(""));
 
                 add(function(record) {
-                    if (typeof record[field] === "undefined" || record[field] === null) return;
+                    if (typeof record[field] === "undefined" || record[field] === null) { return; }
                     if (!record[field].match(regex)) {
                         return message || field + " failed validation";
                     }
@@ -323,7 +323,7 @@
             /* Date Validators */
             IsInPast: function() {
                 add(function(record) {
-                    if (typeof record[field] === "undefined") return;
+                    if (typeof record[field] === "undefined") { return; }
 
                     if (new Date(record[field]).getTime() > new Date().getTime()) {
                         return field + " cannot be in the future";
@@ -358,7 +358,7 @@
                 return errors;
             }
         };
-    }
+    };
 
     var Validate = {
         validate: function() {
@@ -370,7 +370,7 @@
                 var rule = rules[i];
                 var failures = rule.validate(this);
                 if (failures.length > 0) {
-                    errors = errors.concat(failures)
+                    errors = errors.concat(failures);
                 }
             }
 
@@ -388,8 +388,8 @@
     win.ChainValidation = {
         RuleFor: Check,
         Validate: function(model,rules) {
-            model.rules = function() { return rules; }
-            var errors = Validate.validate.apply(model,arguments)
+            model.rules = function() { return rules; };
+            var errors = Validate.validate.apply(model,arguments);
             return errors === undefined ? [] : errors;
         }
     };
