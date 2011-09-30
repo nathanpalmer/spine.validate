@@ -1,7 +1,7 @@
 (function(win) {
     var Check = function(field) {
         var validators = [];
-        var condition = function() { return true; };
+        var conditions = [];
         var message;
         var invert = false;
         var inverter = function(func,record) {
@@ -22,10 +22,10 @@
         };
         var addCondition = function(func) {
             if (invert) {
-                condition = function(record) { return !func(record); };
+                conditions.push(function (record) { return !func(record); });
                 invert = false;
             } else {
-                condition = func;
+                conditions.push(func);
             }
         };
 
@@ -229,7 +229,7 @@
             IsAlpha: function() {
                 add(function(record) {
                     if (record[field] !== undefined && !record[field].match(/[A-Za-z]+/i)) {
-                        return field + " must be alpha";
+                        return message || field + " must be alpha";
                     }
                 });
                 return this;
@@ -237,7 +237,7 @@
             IsNumeric: function() {
                 add(function(record) {
                     if (record[field] !== undefined && !record[field].match(/[0-9]+/)) {
-                        return field + " must be alpha";
+                        return message || field + " must be numeric";
                     }
                 });
                 return this;
@@ -321,15 +321,38 @@
             },
 
             /* Date Validators */
+            IsDate: function() {
+                add(function(record) {
+                    if (typeof record[field] === "undefined") { return };
+
+                    var date = new Date(record[field]);
+                    if (date.toString() === "NaN" || date.toString() === "Invalid Date") {
+                        return message || field + " is not a date";
+                    }
+                });
+                return this;
+            },
             IsInPast: function() {
                 add(function(record) {
-                    if (typeof record[field] === "undefined") { return; }
+                    if (typeof record[field] === "undefined") { return };
 
-                    if (new Date(record[field]).getTime() > new Date().getTime()) {
+                    var d = new Date();
+                    if (new Date(record[field]).getTime() > new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()) {
                         return field + " cannot be in the future";
                     }
                 });
                 return this;
+            },
+            IsInFuture: function() {
+                add(function(record) {
+                    if (typeof record[field] === "undefined") { return };
+
+                    var d = new Date();
+                    if (new Date(record[field]).getTime() < new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()) {
+                        return field + " cannot be in the past";
+                    }
+                });
+                return this;                
             },
 
             /* Message modification */
@@ -345,7 +368,17 @@
                     validator,
                     error;
 
-                if (condition(record)) {
+                var all = function (conditions, record) {
+                    var i,
+                        condition;
+                    for (i = 0; i < conditions.length; i++) {
+                        condition = conditions[i];
+                        if (!condition(record)) return false;
+                    }
+                    return true;
+                };
+
+                if (all(conditions, record)) {
                     for(i=0;i<validators.length;i++) {
                         validator = validators[i];
                         error = validator(record);
