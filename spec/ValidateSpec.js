@@ -122,6 +122,36 @@ describe("Validate", function() {
 		expect(errors[0].property).toBe("first");
 	});
 
+	it("should verify integer as numeric", function() {
+		// Given
+		var model = { number: "1" };
+		var rules = [
+			RuleFor("number")
+				.IsNumeric()
+		];
+
+		// When
+		var errors = ChainValidation.Validate(model, rules);
+
+		// Then
+		expect(errors.length).toBe(0);
+	});
+
+	it("should verify decimal as numeric", function() {
+		// Given
+		var model = { number: "1.1" };
+		var rules = [
+			RuleFor("number")
+				.IsNumeric()
+		];
+
+		// When
+		var errors = ChainValidation.Validate(model, rules);
+
+		// Then
+		expect(errors.length).toBe(0);
+	});
+
 	it("should fail email", function() {
 		// Given
 		var model = { email: "none" };
