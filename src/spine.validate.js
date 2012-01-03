@@ -98,7 +98,7 @@
             Required: function() {
                 add(function(record) {
                     if (record[field] === undefined || record[field] === "") {
-                        return field + " is required";
+                        return message || field + " is required";
                     }
                 });
                 return this;

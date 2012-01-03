@@ -26,6 +26,19 @@ describe("Validate", function() {
 		expect(errors[0].property).toBe("first");
 	});
 
+	it("should return custom message for required", function() {
+		var model = { first: "" };
+		var message = 'First is a required field';
+		var rules = [
+			RuleFor("first")
+				.Required()
+				.Message(message)
+		];
+
+		var errors = ChainValidation.Validate(model, rules);
+		expect(errors[0].message).toBe(message);
+	});
+
 	it("should verify equal", function() {
 		// Given
 		var model = { first: "Eric" };
