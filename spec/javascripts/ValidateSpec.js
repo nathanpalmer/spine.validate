@@ -26,6 +26,19 @@ describe("Validate", function() {
 		expect(errors[0].property).toBe("first");
 	});
 
+	it("should return custom message for required", function() {
+		var model = { first: "" };
+		var message = 'First is a required field';
+		var rules = [
+			RuleFor("first")
+				.Required()
+				.Message(message)
+		];
+
+		var errors = ChainValidation.Validate(model, rules);
+		expect(errors[0].message).toBe(message);
+	});
+
 	it("should verify equal", function() {
 		// Given
 		var model = { first: "Eric" };
@@ -107,6 +120,36 @@ describe("Validate", function() {
 		// Then
 		expect(errors.length).toBe(1);
 		expect(errors[0].property).toBe("first");
+	});
+
+	it("should verify integer as numeric", function() {
+		// Given
+		var model = { number: "1" };
+		var rules = [
+			RuleFor("number")
+				.IsNumeric()
+		];
+
+		// When
+		var errors = ChainValidation.Validate(model, rules);
+
+		// Then
+		expect(errors.length).toBe(0);
+	});
+
+	it("should verify decimal as numeric", function() {
+		// Given
+		var model = { number: "1.1" };
+		var rules = [
+			RuleFor("number")
+				.IsNumeric()
+		];
+
+		// When
+		var errors = ChainValidation.Validate(model, rules);
+
+		// Then
+		expect(errors.length).toBe(0);
 	});
 
 	it("should fail email", function() {
