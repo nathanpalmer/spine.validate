@@ -77,3 +77,9 @@ Then setup some super awesome rules to go along with that
 ```
 
 After that whenever spine would normally call your custom "validate" method it will run through all the rules and send out error events just like you are used too. If you aren't familiar with this process see the spine documentation.
+
+# Contributors
+
+  * Nathan Palmer (author)
+  * Aaron Hansen
+  * Jason Leveille
