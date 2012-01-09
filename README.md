@@ -1,4 +1,4 @@
-<img src="https://secure.travis-ci.org/leveille/spine.validate.png" />
+[<img src="https://secure.travis-ci.org/leveille/spine.validate.png" />](http://travis-ci.org/#!/leveille/spine.validate)
 
 Simple model validation framework for [Spine](https://github.com/maccman/spine). Allowing you to mix strong validation rules with fluid english context. 
 
