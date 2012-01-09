@@ -98,7 +98,7 @@
             Required: function() {
                 add(function(record) {
                     if (record[field] === undefined || record[field] === "") {
-                        return field + " is required";
+                        return message || field + " is required";
                     }
                 });
                 return this;
@@ -236,7 +236,7 @@
             },
             IsNumeric: function() {
                 add(function(record) {
-                    if (record[field] !== undefined && !record[field].match(/[0-9]+/)) {
+                    if (record[field] !== undefined && !(record[field]+'').match(/[0-9\.]+/)) {
                         return message || field + " must be numeric";
                     }
                 });
