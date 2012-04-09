@@ -4,14 +4,6 @@ var Person = (function() {
     model.include({
         rules: function(RuleFor) { return [
             RuleFor("first")
-                .WhenNotNew()
-                .NotNull()
-                .NotEmpty()
-                .LessThanOrEqual(function(record) {
-                    return record.age;
-                }),
-
-            RuleFor("first")
                 .Must(function(field,record) {
                     return field === record.last;
                 })
