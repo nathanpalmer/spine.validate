@@ -106,7 +106,10 @@ describe("Validate", function() {
 
 	it("should invert a condition", function() {
 		// Given
-		var model = { newRecord: false, first: "" };
+		var model = {
+            isNew: function(){return false;},
+            first: ""
+        };
 		var rules = [
 			RuleFor("first")
 				.WhenNot().OnCreate()
