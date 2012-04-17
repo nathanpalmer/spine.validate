@@ -33,7 +33,7 @@
             /* Conditional */
             OnCreate: function() {
                 addCondition(function(record) {
-                    return record.newRecord;  
+                    return record.isNew();
                 });
                 return this;
             },
