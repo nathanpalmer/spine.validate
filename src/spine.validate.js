@@ -52,6 +52,9 @@
             And: function() {
                 return this;  
             },
+            AndIt: function() {
+                return this;
+            },
             Also: function() {
                 return this;  
             },
@@ -353,6 +356,76 @@
                     }
                 });
                 return this;                
+            },
+            IsBeforeDate: function(compareField) {
+                add(function(record) {
+                    if (typeof record[field] === "undefined" || typeof record[compareField] === "undefined") {
+                        return
+                    }
+
+                    var date = new Date(record[field]);
+                    var futureDate = new Date(record[compareField]);
+                    if (date >= futureDate) {
+                        return message || field + " must come before " + compareField;
+                    }
+                });
+                return this;
+            },
+            IsBeforeOrEqualToDate: function(compareField) {
+                add(function(record) {
+                    if (typeof record[field] === "undefined" || typeof record[compareField] === "undefined") {
+                        return
+                    }
+
+                    var date = new Date(record[field]);
+                    var futureDate = new Date(record[compareField]);
+                    if (date > futureDate) {
+                        return message || field + " must come before or equal " + compareField;
+                    }
+                });
+                return this;
+            },
+            IsAfterDate: function(compareField) {
+                add(function(record) {
+                    if (typeof record[field] === "undefined" || typeof record[compareField] === "undefined") {
+                        return
+                    }
+
+                    var date = new Date(record[field]);
+                    var pastDate = new Date(record[compareField]);
+                    if (date <= pastDate) {
+                        return message || field + " must come after " + compareField;
+                    }
+                });
+                return this;
+            },
+            IsAfterOrEqualToDate: function(compareField) {
+                add(function(record) {
+                    if (typeof record[field] === "undefined" || typeof record[compareField] === "undefined") {
+                        return
+                    }
+
+                    var date = new Date(record[field]);
+                    var pastDate = new Date(record[compareField]);
+                    if (date < pastDate) {
+                        return message || field + " must come after or equal " + compareField;
+                    }
+                });
+                return this;
+            },
+            IsEqualToDate: function(compareField) {
+                add(function(record) {
+                    if (typeof record[field] === "undefined" || typeof record[compareField] === "undefined") {
+                        return
+                    }
+
+                    var date = new Date(record[field]);
+                    var comparisonDate = new Date(record[compareField]);
+                    if (+date !== +comparisonDate) {
+                        return message || field + " must equal " + compareField;
+                    }
+                });
+                return this;
             },
 
             /* Message modification */

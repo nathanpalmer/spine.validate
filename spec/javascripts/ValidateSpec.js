@@ -1,6 +1,6 @@
 describe("Validate", function() {
 	var RuleFor = ChainValidation.RuleFor;
-	
+
 	it("should validate with no rules", function() {
 		// Given
 		var model = { first: "" };
@@ -12,7 +12,7 @@ describe("Validate", function() {
 		// Then
 		expect(errors.length).toBe(0);
 	});
-	
+
 	it("should return an error for required", function() {
 		var model = { first: "" };
 		var rules = [
@@ -107,9 +107,9 @@ describe("Validate", function() {
 	it("should invert a condition", function() {
 		// Given
 		var model = {
-            isNew: function(){return false;},
-            first: ""
-        };
+			isNew: function(){return false;},
+			first: ""
+		};
 		var rules = [
 			RuleFor("first")
 				.WhenNot().OnCreate()
@@ -177,6 +177,94 @@ describe("Validate", function() {
 		var rules = [
 			RuleFor("email")
 				.EmailAddress()
+		];
+
+		// When
+		var errors = ChainValidation.Validate(model, rules);
+
+		// Then
+		expect(errors.length).toBe(0);
+	});
+
+	it("should determine that one date comes before another", function() {
+		// Given
+		var model = { start: "01/02/2012", end: "01/03/2012" };
+		var rules = [
+			RuleFor("start")
+				.IsBeforeDate("end")
+		];
+
+		// When
+		var errors = ChainValidation.Validate(model, rules);
+
+		// Then
+		expect(errors.length).toBe(0);
+	});
+
+	it("should determine that one date comes after another", function() {
+		// Given
+		var model = { start: "01/02/2012", end: "01/03/2012" };
+		var rules = [
+			RuleFor("end")
+				.IsAfterDate("start")
+		];
+
+		// When
+		var errors = ChainValidation.Validate(model, rules);
+
+		// Then
+		expect(errors.length).toBe(0);
+	});
+
+	it("should determine that one date is less than or equal to another", function() {
+		// Given
+		var model = {
+			start: "01/02/2012",
+			end: "01/02/2012",
+			end2: "01/03/2012"
+		};
+		var rules = [
+			RuleFor("start")
+				.IsBeforeOrEqualToDate("end")
+				.IsBeforeOrEqualToDate("end2")
+		];
+
+		// When
+		var errors = ChainValidation.Validate(model, rules);
+
+		// Then
+		expect(errors.length).toBe(0);
+	});
+
+	it("should determine that one date is greater than or equal to another", function() {
+		// Given
+		var model = {
+			start: "01/02/2012",
+			start2: "01/01/2012",
+			end: "01/02/2012"
+		};
+		var rules = [
+			RuleFor("end")
+				.IsAfterOrEqualToDate("start")
+				.IsAfterOrEqualToDate("start2")
+		];
+
+		// When
+		var errors = ChainValidation.Validate(model, rules);
+
+		// Then
+		expect(errors.length).toBe(0);
+	});
+
+	it("should determine that two dates are equal", function() {
+		// Given
+		var model = {
+			start: "01/02/2012",
+			end: "01/02/2012"
+		};
+		var rules = [
+			RuleFor("start")
+				.IsEqualToDate("end")
 		];
 
 		// When
