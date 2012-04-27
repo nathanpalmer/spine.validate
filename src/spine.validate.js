@@ -326,7 +326,7 @@
             /* Date Validators */
             IsDate: function() {
                 add(function(record) {
-                    if (typeof record[field] === "undefined") { return };
+                    if (typeof record[field] === "undefined") { return; }
 
                     var date = new Date(record[field]);
                     if (date.toString() === "NaN" || date.toString() === "Invalid Date") {
@@ -337,7 +337,7 @@
             },
             IsInPast: function() {
                 add(function(record) {
-                    if (typeof record[field] === "undefined") { return };
+                    if (typeof record[field] === "undefined") { return; }
 
                     var d = new Date();
                     if (new Date(record[field]).getTime() > new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()) {
@@ -348,7 +348,7 @@
             },
             IsInFuture: function() {
                 add(function(record) {
-                    if (typeof record[field] === "undefined") { return };
+                    if (typeof record[field] === "undefined") { return; }
 
                     var d = new Date();
                     if (new Date(record[field]).getTime() < new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()) {
@@ -360,7 +360,7 @@
             IsBeforeDate: function(compareField) {
                 add(function(record) {
                     if (typeof record[field] === "undefined" || typeof record[compareField] === "undefined") {
-                        return
+                        return;
                     }
 
                     var date = new Date(record[field]);
@@ -374,7 +374,7 @@
             IsBeforeOrEqualToDate: function(compareField) {
                 add(function(record) {
                     if (typeof record[field] === "undefined" || typeof record[compareField] === "undefined") {
-                        return
+                        return;
                     }
 
                     var date = new Date(record[field]);
@@ -388,7 +388,7 @@
             IsAfterDate: function(compareField) {
                 add(function(record) {
                     if (typeof record[field] === "undefined" || typeof record[compareField] === "undefined") {
-                        return
+                        return;
                     }
 
                     var date = new Date(record[field]);
@@ -402,7 +402,7 @@
             IsAfterOrEqualToDate: function(compareField) {
                 add(function(record) {
                     if (typeof record[field] === "undefined" || typeof record[compareField] === "undefined") {
-                        return
+                        return;
                     }
 
                     var date = new Date(record[field]);
@@ -416,7 +416,7 @@
             IsEqualToDate: function(compareField) {
                 add(function(record) {
                     if (typeof record[field] === "undefined" || typeof record[compareField] === "undefined") {
-                        return
+                        return;
                     }
 
                     var date = new Date(record[field]);
