@@ -13,6 +13,7 @@
 src_files:
     - lib/jquery-1.6.2.min.js
     - lib/spine.js
+    - lib/spine.watch.js
     - src/spine.validate.js
 
 # stylesheets

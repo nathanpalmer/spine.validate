@@ -1,4 +1,6 @@
 (function(win) {
+    Spine = win.Spine;
+
     var Check = function(field) {
         var validators = [];
         var conditions = [];
@@ -28,8 +30,42 @@
                 conditions.push(func);
             }
         };
+        var validate = function(record) {
+            var errors = [],
+                i,
+                validator,
+                error;
 
-        return {
+            /*if (record.constructor.records[record.id] &&
+                record.constructor.records[record.id][field] === record[field])
+                return errors;*/
+
+            var all = function (conditions, record) {
+                var i,
+                    condition;
+                for (i = 0; i < conditions.length; i++) {
+                    condition = conditions[i];
+                    if (!condition(record)) return false;
+                }
+                return true;
+            };
+
+            if (all(conditions, record)) {
+                for(i=0;i<validators.length;i++) {
+                    validator = validators[i];
+                    error = validator(record);
+                    if (error) {
+                        errors.push({property: field, message: error});
+                    }
+                }
+            }
+
+            return errors;
+        };
+
+        var chain = {
+            Field: field,
+
             /* Conditional */
             OnCreate: function() {
                 addCondition(function(record) {
@@ -435,42 +471,34 @@
             },
 
             /* And of course.. the validator! */
-            validate: function(record) {
-                var errors = [],
-                    i,
-                    validator,
-                    error;
-
-                if (record.constructor.records[record.id] &&
-                    record.constructor.records[record.id][field] === record[field])
-                    return errors;
-
-                var all = function (conditions, record) {
-                    var i,
-                        condition;
-                    for (i = 0; i < conditions.length; i++) {
-                        condition = conditions[i];
-                        if (!condition(record)) return false;
-                    }
-                    return true;
-                };
-
-                if (all(conditions, record)) {
-                    for(i=0;i<validators.length;i++) {
-                        validator = validators[i];
-                        error = validator(record);
-                        if (error) {
-                            errors.push({property: field, message: error});
-                        }
-                    }
-                }
-
-                return errors;
-            }
+            validate: validate
         };
+
+
+        return chain;
     };
 
     var Validate = {
+        prepareValidation: function() {
+            if (!this.watchEnabled) return;
+
+            var i,
+                rule,
+                self = this,
+                rules = this.rules(Check),
+                fields = [];
+
+            for(i=0;i<rules.length;i++) {
+                rule = rules[i];
+                self.bind("update["+rule.Field+"]", function(record,prop,current,previous) {
+                    var errors = rule.validate(record);
+                    if (errors.length > 0) {
+                        self.trigger("error["+rule.Field+"]", errors);
+                    }
+                });
+            }
+        },
+
         validate: function() {
             var i,
                 rules = this.rules(Check),
@@ -490,7 +518,7 @@
         }
     };
 
-    win.Spine.Validate = Validate;
+    Spine.Validate = Validate;
 
     /* This is a bit of an inverted compatibility layer for non-spine
      * applications. I will need to switch this around. Not the best
