@@ -187,7 +187,7 @@
                     if (typeof record[field] === "undefined")  { return; }
                     
                     if (record[field] < min || record[field] > max) {
-                        return field + " is not between " + min + " and " + max;
+                        return message || field + " is not between " + min + " and " + max;
                     }
                 });
                 return this;
@@ -341,7 +341,7 @@
 
                     var d = new Date();
                     if (new Date(record[field]).getTime() > new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()) {
-                        return field + " cannot be in the future";
+                        return  message || field + " cannot be in the future";
                     }
                 });
                 return this;
@@ -352,7 +352,7 @@
 
                     var d = new Date();
                     if (new Date(record[field]).getTime() < new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()) {
-                        return field + " cannot be in the past";
+                        return  message || field + " cannot be in the past";
                     }
                 });
                 return this;                
