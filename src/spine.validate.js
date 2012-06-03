@@ -480,8 +480,6 @@
 
     var Validate = {
         prepareValidation: function() {
-            if (!this.watchEnabled) return;
-
             var i,
                 rule,
                 self = this,
