@@ -282,7 +282,7 @@ describe("Validate", function() {
 			var Person = Spine.Model.sub({
 				init: function() {
 					this.prepareWatch();
-					this.prepareValidation(this);
+					this.prepareValidation();
 				},
 				rules: function(RuleFor) { return [
 					RuleFor("email")
