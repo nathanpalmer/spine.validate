@@ -341,7 +341,7 @@
 
                     var d = new Date();
                     if (new Date(record[field]).getTime() > new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()) {
-                        return  message || field + " cannot be in the future";
+                        return message || field + " cannot be in the future";
                     }
                 });
                 return this;
@@ -352,7 +352,7 @@
 
                     var d = new Date();
                     if (new Date(record[field]).getTime() < new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()) {
-                        return  message || field + " cannot be in the past";
+                        return message || field + " cannot be in the past";
                     }
                 });
                 return this;                
@@ -440,6 +440,10 @@
                     i,
                     validator,
                     error;
+
+                if (record.constructor.records[record.id] &&
+                    record.constructor.records[record.id][field] === record[field])
+                    return errors;
 
                 var all = function (conditions, record) {
                     var i,
