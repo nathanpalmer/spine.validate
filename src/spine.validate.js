@@ -518,6 +518,10 @@
 
     Spine.Validate = Validate;
 
+    if (Spine.Activator) {
+        Spine.Validate.activators = [ "prepareValidation" ];
+    }
+
     /* This is a bit of an inverted compatibility layer for non-spine
      * applications. I will need to switch this around. Not the best
      * design */

@@ -280,10 +280,11 @@ describe("Validate", function() {
 	describe("Spine", function() {
 		it("should validate when property is set", function() {
 			var Person = Spine.Model.sub({
-				init: function() {
+				/* Init is no longer necessary because of spine.activator.js */
+				/*init: function() {
 					this.prepareWatch();
 					this.prepareValidation();
-				},
+				},*/
 				rules: function(RuleFor) { return [
 					RuleFor("email")
 						.EmailAddress()
