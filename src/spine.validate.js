@@ -492,6 +492,8 @@
                     var errors = rule.validate(record);
                     if (errors.length > 0) {
                         self.trigger("error["+rule.Field+"]", errors);
+                    } else {
+                        self.trigger("valid["+rule.Field+"]", rule.Field);
                     }
                 });
             }
