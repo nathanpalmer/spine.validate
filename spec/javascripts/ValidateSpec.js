@@ -188,6 +188,147 @@ describe("Validate", function() {
 			expect(errors.length).toBe(0);
 		});
 
+    describe("Length", function() {
+      it("should validate a string", function() {
+  			// Given
+  			var model = { string: "a" };
+  			var rules = [
+  				RuleFor("string")
+  					.Length(2)
+  			];
+
+  			// When
+  			var errors = ChainValidation.Validate(model, rules);
+
+  			// Then
+  			expect(errors[0].property).toBe("string");
+      });
+
+      it("should validate an array", function() {
+  			// Given
+  			var model = { array: ["a"] };
+  			var rules = [
+  				RuleFor("array")
+  					.Length(2)
+  			];
+
+  			// When
+  			var errors = ChainValidation.Validate(model, rules);
+
+  			// Then
+  			expect(errors[0].property).toBe("array");
+      });
+
+      it("should not break when there is no value", function() {
+        // Given
+  			var model = { undef: undefined };
+  			var rules = [
+  				RuleFor("undef")
+  					.Length(2)
+  			];
+
+  			// When
+  			var errors = ChainValidation.Validate(model, rules);
+
+  			// Then
+  			expect(errors[0].property).toBe("undef");
+      });
+    });
+
+    describe("MinLength", function() {
+      it("should validate a string", function() {
+  			// Given
+  			var model = { string: "a" };
+  			var rules = [
+  				RuleFor("string")
+  					.MinLength(2)
+  			];
+
+  			// When
+  			var errors = ChainValidation.Validate(model, rules);
+
+  			// Then
+  			expect(errors[0].property).toBe("string");
+      });
+
+      it("should validate an array", function() {
+  			// Given
+  			var model = { array: ["a"] };
+  			var rules = [
+  				RuleFor("array")
+  					.MinLength(2)
+  			];
+
+  			// When
+  			var errors = ChainValidation.Validate(model, rules);
+
+  			// Then
+  			expect(errors[0].property).toBe("array");
+      });
+
+      it("should not break when there is no value", function() {
+        // Given
+  			var model = { undef: undefined };
+  			var rules = [
+  				RuleFor("undef")
+  					.MinLength(2)
+  			];
+
+  			// When
+  			var errors = ChainValidation.Validate(model, rules);
+
+  			// Then
+  			expect(errors[0].property).toBe("undef");
+      });
+    });
+
+    describe("MaxLength", function() {
+      it("should validate a string", function() {
+  			// Given
+  			var model = { string: "abc" };
+  			var rules = [
+  				RuleFor("string")
+  					.MaxLength(2)
+  			];
+
+  			// When
+  			var errors = ChainValidation.Validate(model, rules);
+
+  			// Then
+  			expect(errors[0].property).toBe("string");
+      });
+
+      it("should validate an array", function() {
+  			// Given
+  			var model = { array: ["a", "b", "c"] };
+  			var rules = [
+  				RuleFor("array")
+  					.MaxLength(2)
+  			];
+
+  			// When
+  			var errors = ChainValidation.Validate(model, rules);
+
+  			// Then
+  			expect(errors[0].property).toBe("array");
+      });
+
+      it("should not break when there is no value", function() {
+        // Given
+  			var model = { undef: undefined };
+  			var rules = [
+  				RuleFor("undef")
+  					.MaxLength(2)
+  			];
+
+  			// When
+  			var errors = ChainValidation.Validate(model, rules);
+
+  			// Then
+  			expect(errors[0].property).toBe("undef");
+      });
+    });
+    
 		it("should determine that one date comes before another", function() {
 			// Given
 			var model = { start: "01/02/2012", end: "01/03/2012" };
@@ -306,4 +447,3 @@ describe("Validate", function() {
 		});
 	});
 });
-

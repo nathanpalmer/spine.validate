@@ -106,6 +106,9 @@
             ItIs: function() {
                 return this;
             },
+            HasA: function() {
+                return this;
+            },
 
             /* Inverse */
             Not: function(func) {
@@ -146,7 +149,7 @@
             /* Length Validators */
             Length: function(length) {
                 add(function(record) {
-                    if (record[field].length !== length) {
+                    if (!record[field] || record[field].length !== length) {
                         return message || field + " must be " + length + " characters";
                     }
                 });
@@ -154,7 +157,7 @@
             },
             MaxLength: function(length) {
                 add(function(record) {
-                    if (record[field].length > length) {
+                    if (!record[field] || record[field].length > length) {
                         return message || field + " must be less than " + length + " characters";
                     }
                 });
@@ -162,7 +165,7 @@
             },
             MinLength: function(length) {
                 add(function(record) {
-                    if (record[field].length < length) {
+                    if (!record[field] || record[field].length < length) {
                         return message || field + " must be greater than " + length + " characters";
                     }
                 });
