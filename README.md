@@ -26,7 +26,7 @@ Then setup some super awesome rules to go along with that
 
 ```javascript
     model.include({
-        rules: function(check) { return [
+        rules: function(RuleFor) { return [
             RuleFor("first")
                 .WhenNot().OnCreate()
                 .ItShouldBe()
