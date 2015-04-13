@@ -502,16 +502,20 @@
             }
         },
 
-        validate: function() {
+        validate: function(field) {
             var i,
                 rules = this.rules(Check),
                 errors = [];
 
             for(i=0;i<rules.length;i++) {
-                var rule = rules[i];
-                var failures = rule.validate(this);
-                if (failures.length > 0) {
-                    errors = errors.concat(failures);
+                // Validate if field wasn't set OR field set and matches rules.
+                // If you want to validate only specific field - pass to validate() string name of the field.
+                if (!field || field && rules[i].Field === field) {
+                    var rule = rules[i];
+                    var failures = rule.validate(this);
+                    if (failures.length > 0) {
+                        errors = errors.concat(failures);
+                    }
                 }
             }
 
